@@ -12,7 +12,7 @@ class TrieNode {
 
 class CommandTrie {
 
-    root: TrieNode;
+    private root: TrieNode;
 
     constructor() {
         this.root = new TrieNode();
