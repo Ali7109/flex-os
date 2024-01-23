@@ -10,3 +10,8 @@ This project is a simple terminal emulator built using Next.js, Tailwind CSS, an
 - **Tailwind CSS:** Implements a modern and utility-first CSS framework for styling, ensuring a clean and responsive user interface.
 - **TypeScript:** Enhances code readability, maintainability, and provides static typing for a more robust development experience.
 - **Terminal Emulation:** Mimics a basic terminal environment, allowing users to input commands and receive responses.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for details.
+
