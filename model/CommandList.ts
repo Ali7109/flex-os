@@ -3,7 +3,9 @@ export const CommandList:string[] = [
     "what",
     "clear",
     "wait",
-    "date" 
+    "date",
+    "touch",
+    "ls"
 ]
 
 export const responseList = new Map<string, string>([
@@ -19,6 +21,8 @@ export const responseList = new Map<string, string>([
     ["what", "This is a terminal emulator that simulates a Linux terminal."],
     ["clear", ""],
     ["wait", ""],
-    ["date", ""]
+    ["date", ""],
+    ["touch", ""],
+    ["ls", ""]
 ]);
     
