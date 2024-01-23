@@ -1,4 +1,6 @@
 "use client";
+import { processInputToCommand } from "@/model/CommandProcess";
+import { SetupCommandList } from "@/model/SetupCommandList";
 import React, { useState, useRef, useEffect } from "react";
 
 type Command = {
@@ -8,52 +10,23 @@ type Command = {
 
 export default function Home() {
 	const Database = require("../model/Database");
-
 	const myDb = new Database();
+
+	const trie = SetupCommandList();
 
 	const [commands, setCommands] = useState<Command[]>([]);
 	const processCommand = (command: string) => {
 		setBlockInput(true);
-
-		let cmdarr: string[] = command.split(" ");
-		let compResponse: string = "";
-		if (cmdarr.length === 0) {
-			compResponse = "Invalid Command";
-		} else {
-			if (cmdarr.length === 1) {
-				if (
-					cmdarr[0].toLowerCase() === "what" ||
-					cmdarr[0].toLowerCase() === "what?"
-				) {
-					compResponse =
-						"Hi there, this is a terminal emulator. You can type in commands and see the response. Try typing in 'help' or 'h' to see a list of commands.";
-				} else if (
-					cmdarr[0].toLowerCase() === "help" ||
-					cmdarr[0].toLowerCase() === "h"
-				) {
-					compResponse =
-						"Here is a list of commands you can try: <br><br>" +
-						"help - displays this list of commands <br>" +
-						"what - displays a description of this terminal emulator <br>" +
-						"clear - clears the terminal screen <br>" +
-						"ls - lists all the files in the current directory <br>" +
-						"cd - changes the current directory <br>" +
-						"cat - displays the contents of a file <br>" +
-						"mkdir - creates a new directory <br>" +
-						"touch - creates a new file <br>" +
-						"rm - deletes a file or directory <br>" +
-						"mv - moves a file or directory <br>" +
-						"cp - copies a file or directory <br>" +
-						"pwd - displays the current directory <br>" +
-						"history - displays the history of commands <br>" +
-						"date - displays the current date and time <br>" +
-						"exit - exits the terminal emulator";
-				} else {
-					compResponse = "Invalid Command";
-				}
-			} else {
-				compResponse = "Invalid Command";
-			}
+		if (command === "clear") {
+			setCommands([]);
+			setBlockInput(false);
+			return;
+		}
+		let compResponse = processInputToCommand(command, myDb, trie);
+		if (textToSpeechRequired) {
+			var msg = new SpeechSynthesisUtterance();
+			msg.text = compResponse;
+			window.speechSynthesis.speak(msg);
 		}
 		setCommands((prevCommands) => [
 			...prevCommands,
@@ -64,7 +37,8 @@ export default function Home() {
 
 	const [userInput, setUserInput] = useState<string>("");
 	const [blockInput, setBlockInput] = useState<boolean>(false);
-
+	const [textToSpeechRequired, setTextToSpeechRequired] =
+		useState<boolean>(false);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
 	const scrollToBottom = () => {
@@ -77,7 +51,14 @@ export default function Home() {
 	useEffect(() => {
 		scrollToBottom();
 	}, [commands]);
-
+	useEffect(() => {
+		var msg = new SpeechSynthesisUtterance();
+		msg.text = "Do you want to enable text to speech?";
+		window.speechSynthesis.speak(msg);
+		confirm("Do you want to enable text to speech?")
+			? setTextToSpeechRequired(true)
+			: setTextToSpeechRequired(false);
+	}, []);
 	const handleInputSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setCommands([...commands, { type: "User", message: userInput }]);
@@ -93,6 +74,9 @@ export default function Home() {
       bg-[#2a2c3c] shadow-[20px_20px_60px_rgb(34,36,49),-20px_-20px_60px_rgb(50,52,71)]"
 			>
 				{commands.map((command, index) => {
+					if (command.message === "") {
+						return;
+					}
 					return (
 						<div
 							key={index}
