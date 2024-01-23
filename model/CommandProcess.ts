@@ -3,6 +3,7 @@ import { responseList } from "./CommandList";
 const runProcess = (process: string) => {
     if (process === "clear") {
         // need to start implementing processes, firstly clear
+        
     }
 }
 export const processInputToCommand = (command: string, myDb:Database, trie:CommandTrie) => {
