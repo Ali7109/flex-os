@@ -1,10 +1,19 @@
 class Database {
 
-	private db: Map<string, string>;
+	private static instance: Database | null = null;
 
+	private db: Map<string, string>;
+	
 	constructor() {
 		this.db = new Map();
 	}
+
+	static getInstance(): Database {
+		if (!Database.instance) {
+		  Database.instance = new Database();
+		}
+		return Database.instance;
+	  }	
 
 	get(key:string):string {
 		let reVal = this.db.get(key);
@@ -15,7 +24,12 @@ class Database {
 	}
 
 	set(key:string, value:string) {
-		this.db.set(key, value);
+		if (this.get(key) === "Missing key"){
+			this.db.set(key, value);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	delete(key:string) {
@@ -33,6 +47,23 @@ class Database {
 	get size() {
 		return this.db.size;
 	}
+
+	listKeys() {
+		
+		let response = "";
+		let i:number = 0;
+		let lastIndex:number = this.db.size;
+
+		this.db.forEach((value, key) => {
+			response += key;
+			if (i !== lastIndex - 1){
+				response += ", ";
+			}
+			i++;
+		});
+		return response;
+	}
+
 }
 
-module.exports = Database;
+export default Database;
