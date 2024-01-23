@@ -1,5 +1,6 @@
 "use client";
 import { processInputToCommand } from "@/model/CommandProcess";
+import Database from "@/model/Database";
 import { SetupCommandList } from "@/model/SetupCommandList";
 import { Command } from "@/model/Types/Types";
 import React, { useState, useRef, useEffect } from "react";
@@ -11,8 +12,7 @@ export default function Home() {
 	);
 
 	// Database initialization
-	const Database = require("../model/Database");
-	const myDb = new Database();
+	const dbIntance = Database.getInstance();
 
 	// Command based data structure initialization
 	const trie = SetupCommandList();
@@ -24,6 +24,8 @@ export default function Home() {
 	const [textToSpeechRequired, setTextToSpeechRequired] =
 		useState<boolean>(false);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+	const [mouseIn, setMouseIn] = useState<boolean>(false);
 
 	// Useeffects
 	useEffect(() => {
@@ -45,13 +47,13 @@ export default function Home() {
 		if (currentSpeechUtterance.current) {
 			window.speechSynthesis.cancel();
 		}
-		if (command === "clear") {
+		if (command.trim().toLowerCase() === "clear") {
 			setCommands([]);
 			setBlockInput(false);
 			return;
 		}
 
-		let compResponse = processInputToCommand(command, myDb, trie);
+		let compResponse = processInputToCommand(command, trie);
 
 		if (textToSpeechRequired) {
 			var msg = new SpeechSynthesisUtterance();
@@ -69,6 +71,14 @@ export default function Home() {
 			setTimeout(() => {
 				setBlockInput(false);
 			}, compResponse.arg * 1000);
+		} else if (compResponse.type === "exit") {
+			setTimeout(() => {
+				setBlockInput(false);
+				if (confirm("Do you want to exit?")) {
+					window.close();
+				}
+				// window.location.href = "https://www.google.com";
+			}, compResponse.arg * 2000);
 		} else {
 			setBlockInput(false);
 		}
@@ -88,10 +98,8 @@ export default function Home() {
 		}
 	};
 
-	const [textAlter, setTextAlter] = useState<boolean>();
-
 	return (
-		<main className="flex min-h-screen flex-col items-center p-24 bg-[#2a2c3c]">
+		<main className="flex min-h-screen flex-col items-center p-24 bg-black">
 			<div
 				ref={messagesContainerRef}
 				className="font-mono text-lg flex-grow rounded-t-xl w-full h-32 overflow-auto p-10
@@ -104,7 +112,7 @@ export default function Home() {
 					return (
 						<div
 							key={index}
-							className={`w-full p-2 mb-2 rounded-xl  ${
+							className={`w-full p-2 mb-2 rounded-xl ${
 								command.type === "User"
 									? "bg-black text-green-500"
 									: " bg-slate-500 text-black"
@@ -126,16 +134,22 @@ export default function Home() {
 			<form onSubmit={handleInputSubmit} className="w-full">
 				<input
 					disabled={blockInput}
-					className=" rounded-bl-xl bg-white w-4/5 text-black border-2 border-green-500 p-2 disabled:bg-gray-800"
+					className=" rounded-bl-xl bg-white w-4/5 text-black border-b-2 border-green-500 p-2 disabled:bg-gray-800"
 					placeholder={
-						blockInput ? "input blocked" : "terminal ready to use"
+						blockInput
+							? "input blocked"
+							: mouseIn
+							? "type here"
+							: "terminal ready to use, click here to start typing"
 					}
+					onFocus={() => setMouseIn(true)}
+					onBlur={() => setMouseIn(false)}
 					value={userInput}
 					onChange={(e) => setUserInput(e.target.value)}
 				/>
 				<button
 					disabled={blockInput}
-					className="rounded-br-xl bg-black w-1/5 text-green-500 border-2 border-green-500 p-2 hover:bg-gray-800 transition disabled:bg-green-500 disabled:text-black"
+					className="rounded-br-xl bg-black w-1/5 text-green-500 border-b-2 border-green-500 p-2 hover:bg-gray-800 transition disabled:bg-green-500 disabled:text-black"
 					type="submit"
 					value="Submit"
 				>

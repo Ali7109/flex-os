@@ -29,3 +29,9 @@ export const getDate = (day: number, month: number, year: number): string => {
     return `The date is ${day}${suffix} of ${months[month]}, ${year}.`;
   };
   
+
+export const isNumeric = (str:string):boolean => {
+  let pattern:RegExp  = /^[0-9]+$/;
+  return pattern.test(str)
+}
+ 
