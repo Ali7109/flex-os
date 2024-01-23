@@ -9,30 +9,46 @@ type Command = {
 };
 
 export default function Home() {
+	// Accessibility synthesizer:
+	const currentSpeechUtterance = useRef<SpeechSynthesisUtterance | null>(
+		null
+	);
+
 	const Database = require("../model/Database");
 	const myDb = new Database();
 
 	const trie = SetupCommandList();
-
 	const [commands, setCommands] = useState<Command[]>([]);
 	const processCommand = (command: string) => {
 		setBlockInput(true);
+		if (currentSpeechUtterance.current) {
+			window.speechSynthesis.cancel();
+		}
 		if (command === "clear") {
 			setCommands([]);
 			setBlockInput(false);
 			return;
 		}
 		let compResponse = processInputToCommand(command, myDb, trie);
+
 		if (textToSpeechRequired) {
 			var msg = new SpeechSynthesisUtterance();
-			msg.text = compResponse;
+			msg.text = compResponse.response;
+			currentSpeechUtterance.current = msg;
 			window.speechSynthesis.speak(msg);
 		}
+
 		setCommands((prevCommands) => [
 			...prevCommands,
-			{ type: "Computer", message: compResponse },
+			{ type: "Computer", message: compResponse.response },
 		]);
-		setBlockInput(false);
+		if (compResponse.type === "wait") {
+			setTimeout(() => {
+				setBlockInput(false);
+			}, compResponse.arg * 1000);
+		} else {
+			setBlockInput(false);
+		}
 	};
 
 	const [userInput, setUserInput] = useState<string>("");
