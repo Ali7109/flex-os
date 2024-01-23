@@ -5,3 +5,13 @@
 * {
     /* border: 2px solid red; */
 }
+
+.neuro-shadow {
+    box-shadow: 20px 20px 60px rgba(34, 36, 49), -20px -20px 60px rgba(50, 52, 71), 0 0 50px rgba(40, 199, 111, 0.8);
+}
+
+.neuro-shadow-inset {
+    box-shadow: 20px 20px 60px rgba(34, 36, 49), 
+    -20px -20px 60px 
+    rgba(50, 52, 71);
+}

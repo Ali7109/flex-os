@@ -14,11 +14,36 @@ export default function Home() {
 		null
 	);
 
+	// Database initialization
 	const Database = require("../model/Database");
 	const myDb = new Database();
 
+	// Command based data structure initialization
 	const trie = SetupCommandList();
 	const [commands, setCommands] = useState<Command[]>([]);
+
+	// Component based state management
+	const [userInput, setUserInput] = useState<string>("");
+	const [blockInput, setBlockInput] = useState<boolean>(false);
+	const [textToSpeechRequired, setTextToSpeechRequired] =
+		useState<boolean>(false);
+	const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+	// Useeffects
+	useEffect(() => {
+		scrollToBottom();
+	}, [commands]);
+
+	useEffect(() => {
+		var msg = new SpeechSynthesisUtterance();
+		msg.text = "Do you want to enable text to speech?";
+		window.speechSynthesis.speak(msg);
+		confirm("Do you want to enable text to speech?")
+			? setTextToSpeechRequired(true)
+			: setTextToSpeechRequired(false);
+	}, []);
+
+	// Helper functions
 	const processCommand = (command: string) => {
 		setBlockInput(true);
 		if (currentSpeechUtterance.current) {
@@ -29,6 +54,7 @@ export default function Home() {
 			setBlockInput(false);
 			return;
 		}
+
 		let compResponse = processInputToCommand(command, myDb, trie);
 
 		if (textToSpeechRequired) {
@@ -42,6 +68,7 @@ export default function Home() {
 			...prevCommands,
 			{ type: "Computer", message: compResponse.response },
 		]);
+
 		if (compResponse.type === "wait") {
 			setTimeout(() => {
 				setBlockInput(false);
@@ -51,11 +78,12 @@ export default function Home() {
 		}
 	};
 
-	const [userInput, setUserInput] = useState<string>("");
-	const [blockInput, setBlockInput] = useState<boolean>(false);
-	const [textToSpeechRequired, setTextToSpeechRequired] =
-		useState<boolean>(false);
-	const messagesContainerRef = useRef<HTMLDivElement>(null);
+	const handleInputSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setCommands([...commands, { type: "User", message: userInput }]);
+		processCommand(userInput);
+		setUserInput("");
+	};
 
 	const scrollToBottom = () => {
 		if (messagesContainerRef.current) {
@@ -64,30 +92,14 @@ export default function Home() {
 		}
 	};
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [commands]);
-	useEffect(() => {
-		var msg = new SpeechSynthesisUtterance();
-		msg.text = "Do you want to enable text to speech?";
-		window.speechSynthesis.speak(msg);
-		confirm("Do you want to enable text to speech?")
-			? setTextToSpeechRequired(true)
-			: setTextToSpeechRequired(false);
-	}, []);
-	const handleInputSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		setCommands([...commands, { type: "User", message: userInput }]);
-		processCommand(userInput);
-		setUserInput("");
-	};
+	const [textAlter, setTextAlter] = useState<boolean>();
 
 	return (
 		<main className="flex min-h-screen flex-col items-center p-24 bg-[#2a2c3c]">
 			<div
 				ref={messagesContainerRef}
-				className="font-mono text-lg flex-grow rounded-xl w-full h-32 overflow-auto p-10
-      bg-[#2a2c3c] shadow-[20px_20px_60px_rgb(34,36,49),-20px_-20px_60px_rgb(50,52,71)]"
+				className="font-mono text-lg flex-grow rounded-t-xl w-full h-32 overflow-auto p-10
+      bg-[#2a2c3c] neuro-shadow"
 			>
 				{commands.map((command, index) => {
 					if (command.message === "") {
@@ -118,14 +130,16 @@ export default function Home() {
 			<form onSubmit={handleInputSubmit} className="w-full">
 				<input
 					disabled={blockInput}
-					className="rounded-l-xl bg-white w-4/5 text-black border-2 border-orange-500 p-2"
-					placeholder={blockInput ? "input blocked" : "terminal"}
+					className=" rounded-bl-xl bg-white w-4/5 text-black border-2 border-green-500 p-2 disabled:bg-gray-800"
+					placeholder={
+						blockInput ? "input blocked" : "terminal ready to use"
+					}
 					value={userInput}
 					onChange={(e) => setUserInput(e.target.value)}
 				/>
 				<button
 					disabled={blockInput}
-					className="rounded-r-xl bg-black w-1/5 text-orange-200 border-2 border-orange-200 p-2 hover:bg-orange-200 hover:text-black transition"
+					className="rounded-br-xl bg-black w-1/5 text-green-500 border-2 border-green-500 p-2 hover:bg-gray-800 transition disabled:bg-green-500 disabled:text-black"
 					type="submit"
 					value="Submit"
 				>
