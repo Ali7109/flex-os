@@ -1,12 +1,8 @@
 "use client";
 import { processInputToCommand } from "@/model/CommandProcess";
 import { SetupCommandList } from "@/model/SetupCommandList";
+import { Command } from "@/model/Types/Types";
 import React, { useState, useRef, useEffect } from "react";
-
-type Command = {
-	type: string;
-	message: string;
-};
 
 export default function Home() {
 	// Accessibility synthesizer:

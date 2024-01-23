@@ -1,16 +1,14 @@
 import { responseList } from "./CommandList";
+import { INVALID_COMMAND } from "./DEFINED OBJS/DefinedObjs";
 import { getDate } from "./HelperFunctions";
+import { ProcessResponse } from "./Types/Types";
 
 function isNumeric(str:string){
     let pattern:RegExp  = /^[0-9]+$/;
     return pattern.test(str)
 }
 
-type ProcessResponse = {
-    type: string,
-    response:string,
-    arg: number
-}
+
 const runProcess = (processArr: string[]):ProcessResponse => {
     if (processArr.length === 1){
 
@@ -41,16 +39,12 @@ const runProcess = (processArr: string[]):ProcessResponse => {
             }
         } 
     }
-    return {
-        type: "invalid",
-        response: "Invalid Command",
-        arg: -1
-    }
+    return INVALID_COMMAND;
 }
 
 export const processInputToCommand = (command: string, myDb:Database, trie:CommandTrie):ProcessResponse => {
 
-    let cmdarr: string[] = command.toLowerCase().split(" ");
+    let cmdarr: string[] = command.toLowerCase().trim().split(" ");
     let cmd: string = cmdarr[0];
 
     if (cmdarr.length > 0) {
@@ -71,10 +65,6 @@ export const processInputToCommand = (command: string, myDb:Database, trie:Comma
             }
         }
     }
-    return {
-        type: "invalid",
-        response: "Invalid Command",
-        arg: -1
-    }
+    return INVALID_COMMAND;
 }
 
