@@ -1,6 +1,6 @@
-import { responseList } from "./CommandList";
+import { responseList } from "./CommandDataStructures/CommandList";
 import { ARG_COMMAND, FREE_COMMAND, INVALID_COMMAND, SYSTEM_ERROR } from "./DEFINED OBJS/DefinedObjs";
-import Database from "./Database";
+import Database from "./CommandDataStructures/Database";
 import { getDate, isNumeric } from "./HelperFunctions";
 import { ProcessResponse } from "./Types/Types";
 
