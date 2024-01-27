@@ -1,5 +1,5 @@
 import { Command } from "@/model/Types/Types";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 interface InputFormProps {
 	commands: Command[];
@@ -16,17 +16,22 @@ const InputForm = ({
 }: InputFormProps) => {
 	const [mouseIn, setMouseIn] = useState<boolean>(false);
 	const [userInput, setUserInput] = useState<string>("");
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleInputSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setCommands([...commands, { type: "User", message: userInput }]);
 		processCommand(userInput);
 		setUserInput("");
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
 	};
 
 	return (
 		<form onSubmit={handleInputSubmit} className="w-full">
 			<input
+				ref={inputRef}
 				disabled={blockInput}
 				className=" rounded-bl-xl bg-white w-4/5 text-black border-b-2 border-green-500 p-2 disabled:bg-gray-800"
 				placeholder={

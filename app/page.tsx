@@ -2,12 +2,14 @@
 import { processInputToCommand } from "@/model/CommandProcess";
 import Database from "@/model/CommandDataStructures/Database";
 import { SetupCommandList } from "@/model/CommandDataStructures/SetupCommandList";
-import { Command, User } from "@/model/Types/Types";
+import { Command } from "@/model/Types/Types";
 import React, { useState, useRef, useEffect } from "react";
 import InputForm from "./InputForm/InputForm";
 import TerminalDisplay from "./TerminalDisplay/TerminalDisplay";
 import SignInModal from "./SignInModal/SignInModal";
 import { useAppSelector } from "@/StateManagement/store";
+import SignOut from "./SignInOutButtons/SignOut";
+import SignIn from "./SignInOutButtons/SignIn";
 
 export default function Home() {
 	// Accessibility synthesizer:
@@ -18,12 +20,6 @@ export default function Home() {
 	// Database initialization
 	const dbIntance = Database.getInstance();
 	const user = useAppSelector((state) => state.userReducer.value);
-
-	// const user = {
-	// 	email: "test@.cop",
-	// 	displayName: "Test User",
-	// 	userId: "dasfaskjdfgbnslkjdfg",
-	// };
 
 	//Authentication state
 	const [userName, setUserName] = useState<string>("Guest");
@@ -46,7 +42,7 @@ export default function Home() {
 	}, [commands]);
 
 	// Helper functions
-	const processCommand = (command: string) => {
+	const processCommand = async (command: string) => {
 		setBlockInput(true);
 		if (currentSpeechUtterance.current) {
 			window.speechSynthesis.cancel();
@@ -57,7 +53,7 @@ export default function Home() {
 			return;
 		}
 
-		let compResponse = processInputToCommand(user, command, trie);
+		let compResponse = await processInputToCommand(user, command, trie);
 
 		if (textToSpeechRequired) {
 			var msg = new SpeechSynthesisUtterance();
@@ -101,12 +97,17 @@ export default function Home() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center p-24 bg-black">
-			{showModal && (
+			{showModal ? (
 				<SignInModal
 					setShowModal={setShowModal}
 					setUserName={setUserName}
 				/>
+			) : user.displayName === "Guest" && user.email === "" ? (
+				<SignIn setUserName={setUserName} />
+			) : (
+				<SignOut setUserName={setUserName} />
 			)}
+
 			<TerminalDisplay
 				{...{ commands, messagesContainerRef, userName }}
 			/>

@@ -35,3 +35,42 @@ export const isNumeric = (str:string):boolean => {
   return pattern.test(str)
 }
  
+export const getCurrentDateAndTime = () => {
+
+  const currentDate = new Date();
+
+  // Get components of the date
+  const day = currentDate.getDate().toString().padStart(2, '0');
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  const year = currentDate.getFullYear();
+
+  // Get components of the time
+  const hours = currentDate.getHours().toString().padStart(2, '0');
+  const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+
+  // Construct the formatted string
+  const formattedDateAndTime = `${hours}:${minutes} - ${day}/${month}/${year}`;
+
+  return formattedDateAndTime;
+}
+
+// sort.ts
+export function sortKeys(a: string, b: string): number {
+  const isNumericA = !isNaN(Number(a));
+  const isNumericB = !isNaN(Number(b));
+
+  if (isNumericA && isNumericB) {
+      // If both keys are numeric, compare them as numbers
+      return Number(a) - Number(b);
+  } else if (isNumericA) {
+      // If only key 'a' is numeric, 'a' should come first
+      return -1;
+  } else if (isNumericB) {
+      // If only key 'b' is numeric, 'b' should come first
+      return 1;
+  } else {
+      // If neither key is numeric, compare them as strings
+      return a.localeCompare(b);
+  }
+}
+ 
