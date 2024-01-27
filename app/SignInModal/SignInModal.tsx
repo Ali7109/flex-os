@@ -1,6 +1,5 @@
 import { handleLogin } from "@/model/Firebase/Account";
-import { auth } from "@/model/Firebase/Firebase";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { setUser } from "@/StateManagement/features/user-slice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/StateManagement/store";
@@ -13,53 +12,13 @@ interface ModalProps {
 }
 
 const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
-	const [signedIn, setSignedIn] = useState<boolean>(false);
-
 	const dispatch = useDispatch<AppDispatch>();
-
-	// Authentication check function
-	// const authenticationCheck = new Promise<void>((resolve) => {
-	// 	const unsubscribe = auth.onAuthStateChanged((user) => {
-	// 		if (user) {
-	// 			setSignedIn(true);
-	// 			dispatch(
-	// 				setUser({
-	// 					email: user.email,
-	// 					displayName: user.displayName,
-	// 					userId: user.uid,
-	// 				})
-	// 			);
-	// 			setUserName(user.displayName?.split(" ")[0] || "User");
-	// 		} else {
-	// 			setUserName("Guest");
-	// 			setSignedIn(false);
-	// 		}
-	// 		// Resolve the promise after the authentication check
-	// 		resolve();
-	// 	});
-
-	// 	// Return an unsubscribe function to clean up the listener if needed
-	// 	return unsubscribe;
-	// });
-
-	// useEffect(() => {
-	// 	// Check if user has visited before
-	// 	authenticationCheck.then(() => {
-	// 		if (signedIn) {
-	// 			setShowModal(false);
-	// 		} else {
-	// 			// If user hasn't visited before, set the flag and show modal
-	// 			setShowModal(true);
-	// 		}
-	// 	});
-	// }, []);
 
 	const handleSignIn = async () => {
 		try {
 			// Your sign-in logic here
 			const user = await handleLogin();
 			if (user !== null) {
-				setSignedIn(true);
 				dispatch(
 					setUser({
 						email: user.email,
