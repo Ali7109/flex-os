@@ -12,7 +12,6 @@ const runProcess = async (user:User, processArr: string[]): Promise<ProcessRespo
     let db = Database.getInstance();
 
     let guestUser = (user.displayName === "Guest" && user.email === "");
-
     if (processArr.length === 1){
 
         if (cmd === "date"){
