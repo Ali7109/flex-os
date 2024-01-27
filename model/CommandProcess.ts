@@ -75,10 +75,7 @@ export const processInputToCommand = (user:User, command: string, trie:CommandTr
 
     let cmdarr: string[] = command.toLowerCase().trim().split(" ");
     let cmd: string = cmdarr[0];
-    if (cmd === "debug"){
-        addAccount(user);
-        return INVALID_COMMAND("");
-    } 
+   
     if (cmdarr.length > 0) {
         
         let res = trie.search(cmd);

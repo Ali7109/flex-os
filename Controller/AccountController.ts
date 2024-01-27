@@ -9,9 +9,6 @@ import { User } from '@/model/Types/Types';
 export async function addAccount(user:User): Promise<boolean> {
   try {
 
-    alert(user.displayName)
-
-    return true
     // Assuming db is your Firestore instance
     const accountsCollectionRef = collection(db, 'accounts');
     const checkQuery = query(accountsCollectionRef, where("email", "==", user.email));
@@ -22,13 +19,14 @@ export async function addAccount(user:User): Promise<boolean> {
         // User already exists
         return false;
     }
+
     // Add the user document to the "users" collection
     await addDoc(accountsCollectionRef, {
       timestamp: serverTimestamp(), // Server timestamp
       displayName: user.displayName,
       userId: user.userId,
         email: user.email,
-        fileSystem: new Map<string, string>(),
+        fileSystem: {},
     });
 
     return true; // User was successfully added
@@ -37,15 +35,14 @@ export async function addAccount(user:User): Promise<boolean> {
     return false; // User addition failed
   }
 }
-
 // Function to add a key-value pair to the fileSystem map in Firestore
 export async function addToFileSystem(
+    user: User,
     key: string,
     value: string
 ): Promise<boolean> {
     try {
-        const email = "test@gmail..com";
-        const accountDocRef = doc(db, 'accounts', email);
+        const accountDocRef = doc(db, 'accounts', user.email!);
 
         // Get the user document
         const userDocSnap = await getDoc(accountDocRef);

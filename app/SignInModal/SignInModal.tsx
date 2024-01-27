@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { setUser } from "@/StateManagement/features/user-slice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/StateManagement/store";
+import { addAccount } from "@/Controller/AccountController";
+import { User } from "@/model/Types/Types";
 
 interface ModalProps {
 	setShowModal: (value: boolean) => void;
@@ -65,6 +67,12 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 						userId: user.uid,
 					})
 				);
+				const userDetails: User = {
+					userId: user.uid,
+					email: user.email,
+					displayName: user.displayName,
+				};
+				addAccount(userDetails);
 				setUserName(user.displayName?.split(" ")[0] || "User");
 			}
 		} catch (error) {
