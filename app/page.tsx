@@ -41,6 +41,10 @@ export default function Home() {
 		scrollToBottom();
 	}, [commands]);
 
+	useEffect(() => {
+		setCommands([]);
+	}, [user]);
+
 	// Helper functions
 	const processCommand = async (command: string) => {
 		setBlockInput(true);
