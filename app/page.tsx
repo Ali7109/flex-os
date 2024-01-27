@@ -2,10 +2,12 @@
 import { processInputToCommand } from "@/model/CommandProcess";
 import Database from "@/model/CommandDataStructures/Database";
 import { SetupCommandList } from "@/model/CommandDataStructures/SetupCommandList";
-import { Command } from "@/model/Types/Types";
+import { Command, User } from "@/model/Types/Types";
 import React, { useState, useRef, useEffect } from "react";
 import InputForm from "./InputForm/InputForm";
 import TerminalDisplay from "./TerminalDisplay/TerminalDisplay";
+import SignInModal from "./SignInModal/SignInModal";
+import { useAppSelector } from "@/StateManagement/store";
 
 export default function Home() {
 	// Accessibility synthesizer:
@@ -15,6 +17,16 @@ export default function Home() {
 
 	// Database initialization
 	const dbIntance = Database.getInstance();
+	const user = useAppSelector((state) => state.userReducer.value);
+
+	// const user = {
+	// 	email: "test@.cop",
+	// 	displayName: "Test User",
+	// 	userId: "dasfaskjdfgbnslkjdfg",
+	// };
+
+	//Authentication state
+	const [userName, setUserName] = useState<string>("Guest");
 
 	// Command based data structure initialization
 	const trie = SetupCommandList();
@@ -26,19 +38,12 @@ export default function Home() {
 		useState<boolean>(false);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+	const [showModal, setShowModal] = useState<boolean>(true); // Initially set to true to trigger the modal
+
 	// Useeffects
 	useEffect(() => {
 		scrollToBottom();
 	}, [commands]);
-
-	useEffect(() => {
-		var msg = new SpeechSynthesisUtterance();
-		msg.text = "Do you want to enable text to speech?";
-		window.speechSynthesis.speak(msg);
-		confirm("Do you want to enable text to speech?")
-			? setTextToSpeechRequired(true)
-			: setTextToSpeechRequired(false);
-	}, []);
 
 	// Helper functions
 	const processCommand = (command: string) => {
@@ -52,7 +57,7 @@ export default function Home() {
 			return;
 		}
 
-		let compResponse = processInputToCommand(command, trie);
+		let compResponse = processInputToCommand(user, command, trie);
 
 		if (textToSpeechRequired) {
 			var msg = new SpeechSynthesisUtterance();
@@ -96,7 +101,15 @@ export default function Home() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center p-24 bg-black">
-			<TerminalDisplay {...{ commands, messagesContainerRef }} />
+			{showModal && (
+				<SignInModal
+					setShowModal={setShowModal}
+					setUserName={setUserName}
+				/>
+			)}
+			<TerminalDisplay
+				{...{ commands, messagesContainerRef, userName }}
+			/>
 			<InputForm
 				{...{ commands, setCommands, processCommand, blockInput }}
 			/>
