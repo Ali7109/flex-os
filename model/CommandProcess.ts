@@ -1,13 +1,14 @@
 import { responseList } from "./CommandDataStructures/CommandList";
-import { ARG_COMMAND, FREE_COMMAND, INVALID_COMMAND, SYSTEM_ERROR } from "./DEFINED OBJS/DefinedObjs";
+import { ARG_COMMAND, FREE_COMMAND, INVALID_COMMAND, SYSTEM_ERROR } from "./Defined Constants/DefinedObjs";
 import Database from "./CommandDataStructures/Database";
 import { getDate, isNumeric } from "./HelperFunctions";
-import { ProcessResponse } from "./Types/Types";
+import { ProcessResponse, User } from "./Types/Types";
+import { addAccount } from "@/Controller/AccountController";
 
 
 const runProcess = (processArr: string[]):ProcessResponse => {
 
-    let cmd = processArr[0].toLowerCase(); // command
+    let cmd = processArr[0].toLowerCase(); 
     let db = Database.getInstance();
     if (processArr.length === 1){
 
@@ -70,11 +71,14 @@ const runProcess = (processArr: string[]):ProcessResponse => {
     return INVALID_COMMAND("");
 }
 
-export const processInputToCommand = (command: string, trie:CommandTrie):ProcessResponse => {
+export const processInputToCommand = (user:User, command: string, trie:CommandTrie):ProcessResponse => {
 
     let cmdarr: string[] = command.toLowerCase().trim().split(" ");
     let cmd: string = cmdarr[0];
-
+    if (cmd === "debug"){
+        addAccount(user);
+        return INVALID_COMMAND("");
+    } 
     if (cmdarr.length > 0) {
         
         let res = trie.search(cmd);

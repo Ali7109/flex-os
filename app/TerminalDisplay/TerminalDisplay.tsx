@@ -1,12 +1,18 @@
+import { useAppSelector } from "@/StateManagement/store";
 import { Command } from "@/model/Types/Types";
 import React from "react";
 
 interface TerminalProps {
 	commands: Command[];
 	messagesContainerRef: React.RefObject<HTMLDivElement>;
+	userName: string;
 }
 
-const TerminalDisplay = ({ commands, messagesContainerRef }: TerminalProps) => {
+const TerminalDisplay = ({
+	commands,
+	messagesContainerRef,
+	userName,
+}: TerminalProps) => {
 	return (
 		<div
 			ref={messagesContainerRef}
@@ -27,7 +33,7 @@ const TerminalDisplay = ({ commands, messagesContainerRef }: TerminalProps) => {
 						}`}
 					>
 						<p className="font-bold">
-							{command.type !== "Computer" ? "You: " : ""}
+							{command.type !== "Computer" ? userName : ""}
 						</p>
 						<p
 							className=""
