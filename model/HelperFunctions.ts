@@ -1,8 +1,8 @@
 export const getDate = (day: number, month: number, year: number): string => {
-    const months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   
     // Ensure valid input for day and month
-    if (day < 1 || day > 31 || month < 1 || month > 12) {
+    if (day < 1 || day > 31 || month < 0 || month > 12) {
       return "Invalid date.";
     }
   

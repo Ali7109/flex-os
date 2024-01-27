@@ -16,7 +16,7 @@ const runProcess = async (user:User, processArr: string[]): Promise<ProcessRespo
 
         if (cmd === "date"){
             let date = new Date();
-            return FREE_COMMAND("date", getDate(date.getDate(), date.getDay(), date.getFullYear()));
+            return FREE_COMMAND("date", getDate(date.getDate(), date.getMonth(), date.getFullYear()));
         } else if (cmd === "ls"){
             
             if(!guestUser){
