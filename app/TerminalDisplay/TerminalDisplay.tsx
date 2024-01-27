@@ -16,7 +16,7 @@ const TerminalDisplay = ({
 	return (
 		<div
 			ref={messagesContainerRef}
-			className="font-mono text-lg flex-grow rounded-t-xl w-full h-32 overflow-auto p-10
+			className="font-mono text-md flex-grow rounded-t-xl w-full h-32 overflow-auto p-10
       bg-[#2a2c3c] neuro-shadow"
 		>
 			{commands.map((command, index) => {
