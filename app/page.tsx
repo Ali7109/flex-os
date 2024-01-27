@@ -25,7 +25,7 @@ export default function Home() {
 	const [userName, setUserName] = useState<string>("Guest");
 
 	// Command based data structure initialization
-	const trie = SetupCommandList();
+	const trie = SetupCommandList(); //Constructor to initialize the trie
 	const [commands, setCommands] = useState<Command[]>([]);
 
 	// Component based state management
