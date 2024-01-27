@@ -2,6 +2,7 @@ import { collection, addDoc, serverTimestamp, query, where, getDocs, doc, setDoc
 import { db } from '@/model/Firebase/Firebase';
 import { User } from '@/model/Types/Types';
 import { sortKeys } from '@/model/HelperFunctions';
+import Database from '@/model/CommandDataStructures/Database';
 
 // Add a user to the Firestore "users" collection
 export async function addAccount(user:User): Promise<boolean> {
@@ -42,6 +43,21 @@ export async function addToFileSystem(
     value: string
 ): Promise<boolean> {
     try {
+
+        let guestUser = timeOfCreation === "";
+
+        if(guestUser){
+            const locDb = Database.getInstance();
+
+            if(!locDb.has(key)){
+                let added = locDb.set(key, value);
+                if (added){
+                    return true;
+                }
+            }
+            return false
+        }
+
         // Get the accounts collection reference
         const accountsCollectionRef = collection(db, 'accounts');
 
