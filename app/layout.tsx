@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { Roboto_Mono } from "next/font/google";
 
 import "./globals.css";
+import { ReduxProvider } from "@/StateManagement/provider";
 
-const inter = Inter({ subsets: ["latin"] });
 const robotoMono = Roboto_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,7 +18,9 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={robotoMono.className}>{children}</body>
+			<body className={robotoMono.className}>
+				<ReduxProvider children={children}></ReduxProvider>
+			</body>
 		</html>
 	);
 }
