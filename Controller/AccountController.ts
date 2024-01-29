@@ -142,7 +142,7 @@ export async function getFiles(user: User): Promise<string> {
         let files = "";
         keys.forEach((key) => {
             const value = fileSystem[key];
-            files += value.timeOfCreation + " || " + key + "<br>";
+            files += value.timeOfCreation + " || " + key + ".<br>";
         })
 
         return files;

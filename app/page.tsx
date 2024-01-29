@@ -36,6 +36,17 @@ export default function Home() {
 
 	const [showModal, setShowModal] = useState<boolean>(true); // Initially set to true to trigger the modal
 
+	useEffect(() => {
+		let msg =
+			"Do you want to enable text to speech? If so, press enter. If not, then press tab, then enter.";
+
+		let speechInstance = new SpeechSynthesisUtterance();
+		speechInstance.text = msg;
+		window.speechSynthesis.speak(speechInstance);
+		let enableToSpeech = confirm("Do you want to enable text to speech?");
+		setTextToSpeechRequired(enableToSpeech);
+	}, []);
+
 	// Useeffects
 	useEffect(() => {
 		scrollToBottom();
