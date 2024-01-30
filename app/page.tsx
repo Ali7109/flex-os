@@ -10,6 +10,7 @@ import SignInModal from "./SignInModal/SignInModal";
 import { useAppSelector } from "@/StateManagement/store";
 import SignOut from "./SignInOutButtons/SignOut";
 import SignIn from "./SignInOutButtons/SignIn";
+import TextToSpeechModal from "./TextToSpeechModal/TextToSpeechModal";
 
 export default function Home() {
 	// Accessibility synthesizer:
@@ -35,16 +36,37 @@ export default function Home() {
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
 	const [showModal, setShowModal] = useState<boolean>(true); // Initially set to true to trigger the modal
+	const [showTextToSpeechModal, setShowTextToSpeechModal] =
+		useState<boolean>(true);
 
 	useEffect(() => {
-		let msg =
-			"Do you want to enable text to speech? If so, press enter. If not, then press tab, then enter.";
-
 		let speechInstance = new SpeechSynthesisUtterance();
-		speechInstance.text = msg;
+		speechInstance.rate = 1.5;
+		speechInstance.text =
+			"Do you want to enable text to speech? If so, press Enter. If not, then press Escape.";
 		window.speechSynthesis.speak(speechInstance);
-		let enableToSpeech = confirm("Do you want to enable text to speech?");
-		setTextToSpeechRequired(enableToSpeech);
+
+		// Function to handle key press events
+		const handleKeyPress = (event: KeyboardEvent) => {
+			if (event.key === "Spacebar" || event.key === " ") {
+				window.speechSynthesis.cancel();
+				setTextToSpeechRequired(true);
+				window.removeEventListener("keydown", handleKeyPress); // Remove the event listener after confirmation
+			} else if (event.key === "Escape") {
+				window.speechSynthesis.cancel();
+				setTextToSpeechRequired(false);
+				window.removeEventListener("keydown", handleKeyPress); // Remove the event listener after cancellation
+			}
+			setShowTextToSpeechModal(false);
+		};
+
+		// Add event listener for key presses
+		window.addEventListener("keydown", handleKeyPress);
+
+		// Clean up function to remove event listener on component unmount
+		return () => {
+			window.removeEventListener("keydown", handleKeyPress);
+		};
 	}, []);
 
 	// Useeffects
@@ -72,6 +94,9 @@ export default function Home() {
 
 		if (textToSpeechRequired) {
 			var msg = new SpeechSynthesisUtterance();
+
+			console.log(command);
+			msg.rate = 1.5;
 			msg.text = compResponse.response;
 			currentSpeechUtterance.current = msg;
 			window.speechSynthesis.speak(msg);
@@ -111,8 +136,13 @@ export default function Home() {
 	};
 
 	return (
-		<main className="flex min-h-screen flex-col items-center p-10 pt-20 bg-black">
-			{showModal ? (
+		<main className="relative flex min-h-screen flex-col items-center p-10 pt-20 bg-black ">
+			{showTextToSpeechModal ? (
+				<TextToSpeechModal
+					setTextToSpeechRequired={setTextToSpeechRequired}
+					setShowTextToSpeechModal={setShowTextToSpeechModal}
+				/>
+			) : showModal ? (
 				<SignInModal
 					setShowModal={setShowModal}
 					setUserName={setUserName}
@@ -122,7 +152,6 @@ export default function Home() {
 			) : (
 				<SignOut setUserName={setUserName} />
 			)}
-
 			<TerminalDisplay
 				{...{ commands, messagesContainerRef, userName }}
 			/>

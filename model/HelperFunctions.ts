@@ -74,3 +74,77 @@ export function sortKeys(a: string, b: string): number {
   }
 }
  
+
+// Parse textToSpeech for date and time on ls
+export const readDate = (dateStr: string): string => {
+  // Define an array for mapping month names
+  const months: string[] = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+  ];
+
+  // Split the date string into day, month, and year
+  const [dayStr, monthStr, yearStr] = dateStr.split('/');
+  const day: number = parseInt(dayStr);
+  const month: number = parseInt(monthStr);
+  const year: number = parseInt(yearStr);
+
+  // Ensure the month number is within range
+  if (month < 1 || month > 12) {
+      return "Invalid month";
+  }
+
+  // Ensure the day is within range for the given month
+  const maxDaysInMonth: number = new Date(year, month, 0).getDate();
+  if (day < 1 || day > maxDaysInMonth) {
+      return "Invalid day for the given month and year";
+  }
+
+  // Generate the readable date format
+  const monthName: string = months[month - 1];
+  const dateInWords: string = `${day} of ${monthName} ${year}`;
+  return dateInWords;
+}
+
+export function readTime(timeStr: string): string {
+  // Define an array for mapping numbers to words
+  const numbersInWords: string[] = [
+      "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+      "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+      "seventeen", "eighteen", "nineteen"
+  ];
+
+  const tensInWords: string[] = [
+      "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
+  ];
+
+  // Split the time string into hour and minute components
+  const [hourStr, minuteStr] = timeStr.split(':');
+  const hour: number = parseInt(hourStr);
+  const minute: number = parseInt(minuteStr);
+
+  // Generate the readable time format
+  let hourInWords: string;
+  if (hour === 0) {
+      hourInWords = "twelve";
+  } else if (hour <= 12) {
+      hourInWords = numbersInWords[hour];
+  } else {
+      hourInWords = numbersInWords[hour - 12];
+  }
+
+  let minuteInWords: string;
+  if (minute < 20) {
+      minuteInWords = numbersInWords[minute];
+  } else {
+      const tensDigit: number = Math.floor(minute / 10);
+      const onesDigit: number = minute % 10;
+      minuteInWords = `${tensInWords[tensDigit]} ${numbersInWords[onesDigit]}`;
+  }
+
+  const period: string = (hour < 12) ? "AM" : "PM";
+
+  // Generate the readable time format
+  const timeInWords: string = `${hourInWords} ${minuteInWords} ${period}`;
+  return timeInWords;
+}

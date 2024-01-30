@@ -55,13 +55,13 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 				<p className="text-white mb-4">Would you like to sign in?</p>
 				<div className="flex space-x-4">
 					<button
-						className="bg-white text-green-500 px-4 py-2 rounded-md hover:bg-green-400 transition duration-300"
+						className="bg-black text-green-500 px-4 py-2 rounded-md hover:bg-gray-800 transition duration-300"
 						onClick={handleSignIn}
 					>
 						Sign In
 					</button>
 					<button
-						className="bg-white text-green-500 px-4 py-2 rounded-md hover:bg-green-400 transition duration-300"
+						className="bg-white text-green-500 px-4 py-2 rounded-md hover:bg-gray-200 transition duration-300"
 						onClick={handleCancel}
 					>
 						Cancel
