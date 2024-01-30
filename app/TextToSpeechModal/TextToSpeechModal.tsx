@@ -1,6 +1,3 @@
-import React from "react";
-import { motion } from "framer-motion";
-
 type TTSProps = {
 	setTextToSpeechRequired: (value: boolean) => void;
 	setShowTextToSpeechModal: (value: boolean) => void;
@@ -11,32 +8,35 @@ const TextToSpeechModal = ({
 	setShowTextToSpeechModal,
 }: TTSProps) => {
 	return (
-		<div className="absolute flex flex-col justify-center items-center text-center h-56 w-auto p-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-black z-30">
-			<h1 className="text-white w-full mb-10">
-				Would you like Text-to-Speech{" "}
-				<strong className="text-green-500">enabled</strong>?
-			</h1>
+		<div className="fixed inset-0 flex justify-center items-center z-30">
+			<div className="absolute flex flex-col justify-center items-center text-center min-h-56 md:h-56 h-1/2 md:m-0 m-10 w-auto md:p-10 rounded-xl bg-black z-40">
+				<h1 className="text-white w-2/4 mb-10">
+					Would you like Text-to-Speech{" "}
+					<strong className="text-green-500">enabled</strong>?
+				</h1>
 
-			<div className="flex justify-around w-full text-white mb-5">
-				<button
-					onClick={() => {
-						setTextToSpeechRequired(true);
-						setShowTextToSpeechModal(false);
-					}}
-					className="w-1/2 transition bg-green-500 hover:bg-green-600 text-black rounded-xl p-2"
-				>
-					<strong>Enable</strong> <br></br> (Spacebar key)
-				</button>
-				<button
-					onClick={() => {
-						setTextToSpeechRequired(false);
-						setShowTextToSpeechModal(false);
-					}}
-					className="w-1/3 bg-white hover:bg-gray-400 text-black rounded-xl p-2"
-				>
-					<strong>Disable</strong> <br></br> (Esc key)
-				</button>
+				<div className="flex flex-col md:flex-row gap-3 justify-around w-2/3 md:w-full text-white mb-5">
+					<button
+						onClick={() => {
+							setTextToSpeechRequired(true);
+							setShowTextToSpeechModal(false);
+						}}
+						className="md:w-1/2 transition bg-green-500 hover:bg-green-600 text-black rounded-xl p-2"
+					>
+						<strong>Enable</strong> <br></br> (Spacebar key)
+					</button>
+					<button
+						onClick={() => {
+							setTextToSpeechRequired(false);
+							setShowTextToSpeechModal(false);
+						}}
+						className="md:w-1/3 bg-white hover:bg-gray-400 text-black rounded-xl p-2"
+					>
+						<strong>Disable</strong> <br></br> (Esc key)
+					</button>
+				</div>
 			</div>
+			<div className="fixed inset-0 h-full w-full bg-black opacity-50 z-20"></div>
 		</div>
 	);
 };
