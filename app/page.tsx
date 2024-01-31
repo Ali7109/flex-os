@@ -137,7 +137,7 @@ export default function Home() {
 	};
 
 	return (
-		<main className="relative flex min-h-screen flex-col items-center md:p-10 md:pt-20 bg-black ">
+		<main className="relative flex min-h-screen h-[calc(100dvh)] flex-col items-center md:p-10 md:pt-20 bg-black ">
 			{showTextToSpeechModal ? (
 				<TextToSpeechModal
 					setTextToSpeechRequired={setTextToSpeechRequired}
