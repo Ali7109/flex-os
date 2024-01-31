@@ -150,7 +150,7 @@ export default function Home() {
 
 	return (
 		<main
-			className="relative flex flex-col items-center md:p-10 md:pt-20 bg-black "
+			className="relative md:min-h-screen flex flex-col items-center md:p-10 md:pt-20 bg-black "
 			style={{ height: containerHeight }}
 		>
 			{showTextToSpeechModal ? (
