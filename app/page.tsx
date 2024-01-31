@@ -39,6 +39,8 @@ export default function Home() {
 	const [showTextToSpeechModal, setShowTextToSpeechModal] =
 		useState<boolean>(true);
 
+	const [containerHeight, setContainerHeight] = useState(0);
+
 	useEffect(() => {
 		let speechInstance = new SpeechSynthesisUtterance();
 		speechInstance.rate = 1.5;
@@ -60,6 +62,15 @@ export default function Home() {
 				window.removeEventListener("keydown", handleKeyPress); // Remove the event listener after cancellation
 			}
 		};
+		const updateContainerHeight = () => {
+			setContainerHeight(window.innerHeight);
+		};
+
+		// Initial height setup
+		updateContainerHeight();
+
+		// Update height on window resize
+		window.addEventListener("resize", updateContainerHeight);
 
 		// Add event listener for key presses
 		window.addEventListener("keydown", handleKeyPress);
@@ -67,6 +78,7 @@ export default function Home() {
 		// Clean up function to remove event listener on component unmount
 		return () => {
 			window.removeEventListener("keydown", handleKeyPress);
+			window.removeEventListener("resize", updateContainerHeight);
 		};
 	}, []);
 
@@ -137,7 +149,10 @@ export default function Home() {
 	};
 
 	return (
-		<main className="relative flex min-h-screen h-[calc(100dvh)] flex-col items-center md:p-10 md:pt-20 bg-black ">
+		<main
+			className="relative flex flex-col items-center md:p-10 md:pt-20 bg-black "
+			style={{ height: containerHeight }}
+		>
 			{showTextToSpeechModal ? (
 				<TextToSpeechModal
 					setTextToSpeechRequired={setTextToSpeechRequired}
