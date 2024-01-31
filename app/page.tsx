@@ -43,21 +43,22 @@ export default function Home() {
 		let speechInstance = new SpeechSynthesisUtterance();
 		speechInstance.rate = 1.5;
 		speechInstance.text =
-			"Do you want to enable text to speech? If so, press Enter. If not, then press Escape.";
+			"Do you want to enable text to speech? If so, press the Spacebar or Space key. If not, then press Escape key.";
 		window.speechSynthesis.speak(speechInstance);
 
 		// Function to handle key press events
 		const handleKeyPress = (event: KeyboardEvent) => {
 			if (event.key === "Spacebar" || event.key === " ") {
 				window.speechSynthesis.cancel();
+				setShowTextToSpeechModal(false);
 				setTextToSpeechRequired(true);
 				window.removeEventListener("keydown", handleKeyPress); // Remove the event listener after confirmation
 			} else if (event.key === "Escape") {
 				window.speechSynthesis.cancel();
+				setShowTextToSpeechModal(false);
 				setTextToSpeechRequired(false);
 				window.removeEventListener("keydown", handleKeyPress); // Remove the event listener after cancellation
 			}
-			setShowTextToSpeechModal(false);
 		};
 
 		// Add event listener for key presses
@@ -146,6 +147,7 @@ export default function Home() {
 				<SignInModal
 					setShowModal={setShowModal}
 					setUserName={setUserName}
+					textToSpeechRequired={textToSpeechRequired}
 				/>
 			) : user.displayName === "Guest" && user.email === "" ? (
 				<SignIn setUserName={setUserName} />
@@ -156,7 +158,13 @@ export default function Home() {
 				{...{ commands, messagesContainerRef, userName }}
 			/>
 			<InputForm
-				{...{ commands, setCommands, processCommand, blockInput }}
+				{...{
+					commands,
+					setCommands,
+					processCommand,
+					blockInput,
+					showModal,
+				}}
 			/>
 		</main>
 	);

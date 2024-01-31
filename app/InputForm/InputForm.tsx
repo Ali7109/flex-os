@@ -6,6 +6,7 @@ interface InputFormProps {
 	setCommands: React.Dispatch<React.SetStateAction<Command[]>>;
 	processCommand: (command: string) => void;
 	blockInput: boolean;
+	showModal: boolean;
 }
 
 const InputForm = ({
@@ -13,6 +14,7 @@ const InputForm = ({
 	setCommands,
 	processCommand,
 	blockInput,
+	showModal,
 }: InputFormProps) => {
 	const [mouseIn, setMouseIn] = useState<boolean>(false);
 	const [userInput, setUserInput] = useState<string>("");
@@ -32,7 +34,7 @@ const InputForm = ({
 		<form onSubmit={handleInputSubmit} className="w-full">
 			<input
 				ref={inputRef}
-				disabled={blockInput}
+				disabled={blockInput || showModal}
 				className="md:rounded-bl-xl bg-white w-4/5 text-black border-b-2 border-green-500 p-2 disabled:bg-gray-800"
 				placeholder={
 					blockInput
@@ -47,7 +49,7 @@ const InputForm = ({
 				onChange={(e) => setUserInput(e.target.value)}
 			/>
 			<button
-				disabled={blockInput}
+				disabled={blockInput || showModal}
 				className="md:rounded-br-xl bg-black w-1/5 text-green-500 border-b-2 border-green-500 p-2 hover:bg-gray-800 transition disabled:bg-green-500 disabled:text-black"
 				type="submit"
 				value="Submit"
