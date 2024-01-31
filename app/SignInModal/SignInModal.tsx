@@ -1,5 +1,5 @@
 import { handleLogin } from "@/model/Firebase/Account";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { setUser } from "@/StateManagement/features/user-slice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/StateManagement/store";
@@ -9,9 +9,23 @@ import { FaGoogle } from "react-icons/fa";
 interface ModalProps {
 	setShowModal: (value: boolean) => void;
 	setUserName: (value: string) => void;
+	textToSpeechRequired: boolean;
 }
 
-const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
+const readFocus = (message: string) => {
+	window.speechSynthesis.cancel();
+
+	const speechInstance = new SpeechSynthesisUtterance();
+	speechInstance.rate = 1.5;
+	speechInstance.text = message;
+	window.speechSynthesis.speak(speechInstance);
+};
+
+const SignInModal = ({
+	setShowModal,
+	setUserName,
+	textToSpeechRequired,
+}: ModalProps) => {
 	const dispatch = useDispatch<AppDispatch>();
 
 	const handleSignIn = async () => {
@@ -41,6 +55,11 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 			setShowModal(false);
 		}
 	};
+	useEffect(() => {
+		if (textToSpeechRequired) {
+			readFocus("Would you like to sign in?");
+		}
+	}, []);
 
 	const handleCancel = () => {
 		// Handle cancel action, if needed
@@ -59,6 +78,9 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 					<button
 						className="bg-white text-green-500 flex items-center px-4 py-2 border-b-4 border-r-4 border-black rounded-md hover:bg-black hover:border-white -translate-x-1 hover:translate-x-0 -translate-y-1 hover:translate-y-0 transition duration-100"
 						onClick={handleSignIn}
+						onFocus={() => {
+							if (textToSpeechRequired) readFocus("Sign In");
+						}}
 					>
 						<FaGoogle className=" mr-2" />
 						Sign In
@@ -66,6 +88,10 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 					<button
 						className="bg-white text-green-500 px-4 py-2 border-b-4 border-r-4 border-black rounded-md hover:bg-black hover:border-white -translate-x-1 hover:translate-x-0 -translate-y-1 hover:translate-y-0 transition duration-300"
 						onClick={handleCancel}
+						onFocus={() => {
+							if (textToSpeechRequired)
+								readFocus("Cancel and dont sign in");
+						}}
 					>
 						Cancel
 					</button>

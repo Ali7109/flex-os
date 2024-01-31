@@ -10,7 +10,7 @@ const TextToSpeechModal = ({
 	return (
 		<div className="fixed inset-0 flex justify-center items-center z-30">
 			<div className="absolute flex flex-col justify-center items-center text-center min-h-56 md:h-56 h-1/2 md:m-0 m-10 w-auto md:p-10 rounded-xl bg-black z-40">
-				<h1 className="text-white w-2/4 mb-10">
+				<h1 className="text-white w-2/4 md:w-full mb-10">
 					Would you like Text-to-Speech{" "}
 					<strong className="text-green-500">enabled</strong>?
 				</h1>
