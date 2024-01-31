@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/StateManagement/store";
 import { addAccount } from "@/Controller/AccountController";
 import { User } from "@/model/Types/Types";
-
+import { FaGoogle } from "react-icons/fa";
 interface ModalProps {
 	setShowModal: (value: boolean) => void;
 	setUserName: (value: string) => void;
@@ -50,18 +50,21 @@ const SignInModal = ({ setShowModal, setUserName }: ModalProps) => {
 	return (
 		<div className="fixed inset-0 z-10 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black opacity-50"></div>
-			<div className="relative bg-green-500 p-8 rounded-lg">
-				<h2 className="text-2xl font-bold mb-4 text-white">Welcome!</h2>
+			<div className="relative bg-green-500 border-white border-b-4 border-r-4 p-8 rounded-lg">
+				<h2 className="text-2xl font-bold mb-4 text-white bg-black w-fit px-4 rounded-md">
+					Welcome!
+				</h2>
 				<p className="text-white mb-4">Would you like to sign in?</p>
-				<div className="flex space-x-4">
+				<div className="flex justify-around">
 					<button
-						className="bg-black text-green-500 px-4 py-2 rounded-md hover:bg-gray-800 transition duration-300"
+						className="bg-white text-green-500 flex items-center px-4 py-2 border-b-4 border-r-4 border-black rounded-md hover:bg-black hover:border-white -translate-x-1 hover:translate-x-0 -translate-y-1 hover:translate-y-0 transition duration-100"
 						onClick={handleSignIn}
 					>
+						<FaGoogle className=" mr-2" />
 						Sign In
 					</button>
 					<button
-						className="bg-white text-green-500 px-4 py-2 rounded-md hover:bg-gray-200 transition duration-300"
+						className="bg-white text-green-500 px-4 py-2 border-b-4 border-r-4 border-black rounded-md hover:bg-black hover:border-white -translate-x-1 hover:translate-x-0 -translate-y-1 hover:translate-y-0 transition duration-300"
 						onClick={handleCancel}
 					>
 						Cancel
